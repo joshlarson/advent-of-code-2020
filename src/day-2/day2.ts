@@ -8,7 +8,7 @@ function parsePolicy(policy: string) {
   };
 }
 
-export function validPassword(line: string) {
+export function validPasswordByCount(line: string) {
   const [policy, password] = line.split(": ");
 
   const { policyMin, policyMax, policyChar } = parsePolicy(policy);
@@ -23,10 +23,10 @@ export function validPassword(line: string) {
   return count >= policyMin && count <= policyMax;
 }
 
-export function validPasswordCount(lines: string[]) {
+export function countValidPasswordsByCount(lines: string[]) {
   var count = 0;
   for (const line of lines) {
-    if (validPassword(line)) {
+    if (validPasswordByCount(line)) {
       count++;
     }
   }
@@ -37,4 +37,4 @@ export function validPasswordCount(lines: string[]) {
 // const contents = fs.readFileSync("files/day2.txt", "utf8");
 
 // const input = contents.split("\n");
-// console.log(validPasswordCount(input));
+// console.log(countValidPasswordsByCount(input));

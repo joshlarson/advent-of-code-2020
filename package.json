@@ -1,0 +1,28 @@
+{
+  "name": "advent-of-code-2020",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drevets/advent-of-code-2020.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/drevets/advent-of-code-2020/issues"
+  },
+  "homepage": "https://github.com/drevets/advent-of-code-2020#readme",
+  "dependencies": {
+    "@types/jest": "^26.0.16",
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb-typescript-prettier": "^4.1.0",
+    "eslint-formatter-summary": "^1.0.5",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.2"
+  }
+}

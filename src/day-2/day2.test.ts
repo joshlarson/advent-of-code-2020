@@ -1,4 +1,9 @@
-import { validPasswordByCount, countValidPasswordsByCount } from "./day2";
+import {
+  validPasswordByCount,
+  countValidPasswordsByCount,
+  validPasswordByLocation,
+  countValidPasswordsByLocation,
+} from "./day2";
 
 describe("validPasswordByCount", () => {
   test("a simple valid password", () => {
@@ -44,7 +49,7 @@ describe("countValidPasswordsByCount", () => {
     );
   });
 
-  test("part 1 examples for countValidPasswordsByCount", () => {
+  test("part 1 examples", () => {
     expect(
       countValidPasswordsByCount([
         "1-3 a: abcde",
@@ -52,5 +57,38 @@ describe("countValidPasswordsByCount", () => {
         "2-9 c: ccccccccc",
       ])
     ).toBe(2);
+  });
+});
+
+describe("validPasswordByLocation", () => {
+  test("password is valid if either location has the letter", () => {
+    expect(validPasswordByLocation("1-3 a: abcde")).toBe(true);
+    expect(validPasswordByLocation("1-3 a: cbade")).toBe(true);
+    expect(validPasswordByLocation("2-4 a: bacde")).toBe(true);
+    expect(validPasswordByLocation("2-4 a: dbcae")).toBe(true);
+  });
+
+  test("expected an a at position 1 or 3, got neither", () => {
+    expect(validPasswordByLocation("1-3 a: bacde")).toBe(false);
+  });
+
+  test("expected an a at either position 1 or 3, got both", () => {
+    expect(validPasswordByLocation("1-3 a: abade")).toBe(false);
+  });
+
+  test("expected a c at either position 1 or 4, got neither", () => {
+    expect(validPasswordByLocation("1-4 c: abcde")).toBe(false);
+  });
+});
+
+describe("countValidPasswordsByLocation", () => {
+  test("part 2 examples", () => {
+    expect(
+      countValidPasswordsByLocation([
+        "1-3 a: abcde",
+        "1-3 b: cdefg",
+        "2-9 c: ccccccccc",
+      ])
+    ).toBe(1);
   });
 });

@@ -26,13 +26,10 @@ export function validPasswordByCount(line: string) {
 export function validPasswordByLocation(line: string) {
   const { policyMin, policyMax, policyChar, password } = parsePolicy(line);
 
-  var indicesFilled = 0;
-  for (var i of [policyMin - 1, policyMax - 1]) {
-    if (password[i] == policyChar) {
-      indicesFilled++;
-    }
-  }
-  return indicesFilled == 1;
+  return (
+    (password[policyMin - 1] == policyChar) !=
+    (password[policyMax - 1] == policyChar)
+  );
 }
 
 export function countValidPasswordsBy(

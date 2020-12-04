@@ -68,5 +68,13 @@ describe("Grid", () => {
 
       expect(grid.treesEncountered()).toBe(7);
     });
+
+    test("can take other rowSkips and colSkips", () => {
+      expect(new TreeGrid(["....", "...#"]).treesEncountered(1, 2)).toBe(0);
+      expect(new TreeGrid(["....", "..#."]).treesEncountered(1, 2)).toBe(1);
+      expect(
+        new TreeGrid(["....", "####", "...."]).treesEncountered(2, 2)
+      ).toBe(0);
+    });
   });
 });

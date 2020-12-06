@@ -144,4 +144,254 @@ describe("Passport", () => {
       ).toBe(2);
     });
   });
+
+  describe("superValidity", () => {
+    test("sample valid passport", () => {
+      expect(
+        new Passport(
+          "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+        ).isSuperValid()
+      ).toBe(true);
+    });
+
+    describe("byr superValidity", () => {
+      test("must be present", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be >= 1920", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1919 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be <= 2002", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:2003 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be a number", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:sup eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+    });
+
+    describe("iyr superValidity", () => {
+      test("must be present", () => {
+        expect(
+          new Passport(
+            "hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be >= 2010", () => {
+        expect(
+          new Passport(
+            "iyr:2009 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be <= 2020", () => {
+        expect(
+          new Passport(
+            "iyr:2021 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be a number", () => {
+        expect(
+          new Passport(
+            "iyr:howdy hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+    });
+
+    describe("eyr superValidity", () => {
+      test("must be present", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be >= 2020", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2019 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be <= 2030", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2031 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be a number", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:never pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+    });
+
+    describe("hgt superValidity", () => {
+      test("must be present", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be either in or cm", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:6ft hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be at least 150 cm", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:149cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be at most 193 cm", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:194cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be at least 59 in", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:58in hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be at most 76 in", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:77in hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+    });
+
+    describe("hcl superValidity", () => {
+      test("must be present", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must begin with a #", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must be exactly length 7", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652 ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652aa ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must have only 0-9 and a-f", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6g652 ecl:blu byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+    });
+
+    describe("ecl superValidity", () => {
+      test("must be present", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must not be some other random color", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:foo byr:1944 eyr:2021 pid:093154719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+    });
+
+    describe("pid superValidity", () => {
+      test("must be present", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must have length exactly 9", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:09315471"
+          ).isSuperValid()
+        ).toBe(false);
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:0931547192"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+
+      test("must have only 0-9", () => {
+        expect(
+          new Passport(
+            "iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093abc719"
+          ).isSuperValid()
+        ).toBe(false);
+      });
+    });
+  });
 });

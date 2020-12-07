@@ -1,5 +1,3 @@
-import { isConstructorDeclaration } from "typescript";
-
 export function seatId(description: string): number {
   return parseInt(
     description
@@ -23,9 +21,21 @@ export function maxSeatId(descriptions: string[]): number {
   return descriptions.map(seatId).reduce(max, -1);
 }
 
+export function missingSeatId(descriptions: string[]): number {
+  const maxId = maxSeatId(descriptions);
+  const filledSeatIds = new Set(descriptions.map(seatId));
+
+  for (var i = maxId; i >= 0; i--) {
+    if (!filledSeatIds.has(i)) {
+      return i;
+    }
+  }
+}
+
 const fs = require("fs");
 const contents = fs.readFileSync("files/day5.txt", "utf8");
 
 const input = contents.split("\n");
 
 console.log(maxSeatId(input));
+console.log(missingSeatId(input));

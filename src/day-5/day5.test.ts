@@ -1,4 +1,4 @@
-import { maxSeatId, seatId } from "./day5";
+import { maxSeatId, missingSeatId, seatId } from "./day5";
 
 describe("seatId", () => {
   test("all the way in the front, all the way to the left", () => {
@@ -30,5 +30,15 @@ describe("maxSeatId", () => {
   test("with some seats", () => {
     expect(maxSeatId(["FFFFFFFRLL", "FFFFFFFLLR", "FFFFFFFLLL"])).toBe(4);
     expect(maxSeatId(["FFFFFFFLLL", "FFFFFFFRLR", "FFFFFFFLRL"])).toBe(5);
+  });
+});
+
+describe("missingSeatId", () => {
+  test("with some seats", () => {
+    expect(missingSeatId(["FFFFFFFLLL", "FFFFFFFLLR", "FFFFFFFLRR"])).toBe(2);
+  });
+
+  test("with the front of the plane empty", () => {
+    expect(missingSeatId(["FFFFFFBLLL", "FFFFFFBLLR", "FFFFFFBLRR"])).toBe(10);
   });
 });

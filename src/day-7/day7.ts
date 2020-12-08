@@ -1,3 +1,9 @@
+function sum(array: number[]): number {
+  return array.reduce((a, b) => {
+    return a + b;
+  }, 0);
+}
+
 export class BagRuleSet {
   rules: {};
 
@@ -21,12 +27,12 @@ export class BagRuleSet {
   }
 
   private parseInnerBag(innerBag: string) {
-    const [_, color1, color2, __] = innerBag.split(" ");
-    return color1 + " " + color2;
+    const [count, color1, color2, __] = innerBag.split(" ");
+    return { color: color1 + " " + color2, count: +count };
   }
 
   bagContains(outerBag: string, innerBag: string): boolean {
-    for (const testBag of this.rules[outerBag]) {
+    for (const { color: testBag } of this.rules[outerBag]) {
       if (testBag == innerBag || this.bagContains(testBag, innerBag)) {
         return true;
       }
@@ -39,6 +45,14 @@ export class BagRuleSet {
       this.bagContains(outerBag, innerBag)
     ).length;
   }
+
+  bagContentCount(outerBag: string): number {
+    return sum(
+      this.rules[outerBag].map(
+        ({ count, color }) => count * (1 + this.bagContentCount(color))
+      )
+    );
+  }
 }
 
 const fs = require("fs");
@@ -47,3 +61,4 @@ const contents = fs.readFileSync("files/day7.txt", "utf8");
 const input = contents.split("\n");
 const ruleSet = new BagRuleSet(input);
 console.log(ruleSet.bagContainsCount("shiny gold"));
+console.log(ruleSet.bagContentCount("shiny gold"));

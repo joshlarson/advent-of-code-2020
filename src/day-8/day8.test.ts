@@ -1,4 +1,9 @@
-import { GameConsole } from "./day8";
+import {
+  findRepairedConsole,
+  GameConsole,
+  repairLine,
+  repairLines,
+} from "./day8";
 
 describe("GameConsole", () => {
   test("a console starts out with accumulator 0", () => {
@@ -102,5 +107,63 @@ describe("GameConsole", () => {
       gameConsole.execute();
       expect(gameConsole.accumulator()).toBe(5);
     });
+
+    test("runs until it terminates", () => {
+      const gameConsole = new GameConsole(["acc +3", "acc +2", "acc +5"]);
+      gameConsole.execute();
+      expect(gameConsole.accumulator()).toBe(10);
+      expect(gameConsole.hasLooped()).toBe(false);
+    });
+  });
+});
+
+describe("repairLine", () => {
+  test("does not alter acc commands", () => {
+    expect(repairLine("acc +1")).toBe(null);
+  });
+
+  test("changes jmp to nop", () => {
+    expect(repairLine("jmp +1")).toBe("nop +1");
+  });
+
+  test("changes nop to jmp", () => {
+    expect(repairLine("nop +1")).toBe("jmp +1");
+  });
+});
+
+describe("repairLines", () => {
+  test("returns an array with the line repaired", () => {
+    expect(repairLines(["jmp +1"])).toStrictEqual([["nop +1"]]);
+  });
+
+  test("returns a different array for each line that it repaired", () => {
+    expect(repairLines(["jmp +1", "nop -1"])).toStrictEqual([
+      ["nop +1", "nop -1"],
+      ["jmp +1", "jmp -1"],
+    ]);
+  });
+
+  test("does not include entries for a 'repaired' acc", () => {
+    expect(repairLines(["jmp +1", "acc -1"])).toStrictEqual([
+      ["nop +1", "acc -1"],
+    ]);
+  });
+});
+
+describe("findRepairedConsole", () => {
+  test("part 2 example", () => {
+    expect(
+      findRepairedConsole([
+        "nop +0",
+        "acc +1",
+        "jmp +4",
+        "acc +3",
+        "jmp -3",
+        "acc -99",
+        "acc +1",
+        "jmp -4",
+        "acc +6",
+      ])
+    ).toBe(8);
   });
 });

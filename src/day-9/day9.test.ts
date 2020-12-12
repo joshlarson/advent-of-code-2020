@@ -96,4 +96,43 @@ describe("Preambulator", () => {
       });
     });
   });
+
+  describe("sumThru", () => {
+    test("can sum two consecutive items", () => {
+      const preambulator = new Preambulator(3, [1, 2, 4, 8]);
+      expect(preambulator.sumThru(0, 1)).toBe(3);
+      expect(preambulator.sumThru(1, 2)).toBe(6);
+      expect(preambulator.sumThru(2, 3)).toBe(12);
+    });
+
+    test("can sum three items in a row", () => {
+      const preambulator = new Preambulator(3, [1, 2, 4, 8]);
+      expect(preambulator.sumThru(0, 2)).toBe(7);
+      expect(preambulator.sumThru(1, 3)).toBe(14);
+    });
+  });
+
+  describe("findBorderForSum", () => {
+    test("works when the region has only two items", () => {
+      const preambulator = new Preambulator(3, [1, 2, 4, 8]);
+      expect(preambulator.findExtremaForSum(3)).toBe(3);
+    });
+
+    test("excludes the middle when the first item is at the beginning", () => {
+      const preambulator = new Preambulator(3, [1, 2, 4, 8]);
+      expect(preambulator.findExtremaForSum(7)).toBe(5);
+      expect(preambulator.findExtremaForSum(15)).toBe(9);
+    });
+
+    test("excludes the middle when the first item is at the beginning and the items are not sorted", () => {
+      const preambulator = new Preambulator(3, [4, 1, 2, 8]);
+      expect(preambulator.findExtremaForSum(7)).toBe(5);
+      expect(preambulator.findExtremaForSum(15)).toBe(9);
+    });
+
+    test("excludes the middle when the first item is not at the beginning", () => {
+      const preambulator = new Preambulator(3, [1, 2, 8, 4]);
+      expect(preambulator.findExtremaForSum(14)).toBe(10);
+    });
+  });
 });

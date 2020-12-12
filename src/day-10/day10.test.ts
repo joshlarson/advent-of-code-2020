@@ -39,4 +39,87 @@ describe("AdapterGroup", () => {
       expect(differenceCounts).toStrictEqual({ 1: 7, 2: 0, 3: 5 });
     });
   });
+
+  describe("arrangementCount", () => {
+    test("when there is one adapter (the last adapter can never be removed)", () => {
+      expect(new AdapterGroup([1]).getArrangementCount()).toBe(1);
+    });
+
+    test("when there are two adapters and the first one can be removed", () => {
+      expect(new AdapterGroup([1, 2]).getArrangementCount()).toBe(2);
+      expect(new AdapterGroup([2, 3]).getArrangementCount()).toBe(2);
+    });
+
+    test("when there are two adapters and the first one cannot be removed", () => {
+      expect(new AdapterGroup([3, 4]).getArrangementCount()).toBe(1);
+    });
+
+    test("when there are three adapters and either of the first two could be removed", () => {
+      expect(new AdapterGroup([1, 2, 3]).getArrangementCount()).toBe(4);
+    });
+
+    test("when there are three adapters but the first one also can't be removed and either of the first two could be removed", () => {
+      expect(new AdapterGroup([3, 4, 5]).getArrangementCount()).toBe(2);
+    });
+
+    test("when there are three adapters and either of the first two could be removed but not both", () => {
+      expect(new AdapterGroup([2, 3, 5]).getArrangementCount()).toBe(3);
+    });
+
+    test("part 2 example 1", () => {
+      expect(
+        new AdapterGroup([
+          16,
+          10,
+          15,
+          5,
+          1,
+          11,
+          7,
+          19,
+          6,
+          12,
+          4,
+        ]).getArrangementCount()
+      ).toBe(8);
+    });
+
+    test("part 2 example 2", () => {
+      expect(
+        new AdapterGroup([
+          28,
+          33,
+          18,
+          42,
+          31,
+          14,
+          46,
+          20,
+          48,
+          47,
+          24,
+          23,
+          49,
+          45,
+          19,
+          38,
+          39,
+          11,
+          1,
+          32,
+          25,
+          35,
+          8,
+          17,
+          7,
+          9,
+          4,
+          2,
+          34,
+          10,
+          3,
+        ]).getArrangementCount()
+      ).toBe(19208);
+    });
+  });
 });

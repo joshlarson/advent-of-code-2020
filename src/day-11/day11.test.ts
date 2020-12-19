@@ -115,6 +115,30 @@ describe("SeatGrid", () => {
           .isOccupied(1, 1)
       ).toBe(true);
     });
+
+    it("the neighbor threshold can be optionally configured", () => {
+      expect(
+        SeatGrid.parseFullGrid(["LLL", "L##", "###"])
+          .nextGrid({ neighborThreshold: 5, lineOfSight: false })
+          .isOccupied(1, 1)
+      ).toBe(true);
+    });
+
+    it("can use line of sight instead of immediate neighbors", () => {
+      expect(
+        SeatGrid.parseFullGrid(["LLLL", "L#.#", "####"])
+          .nextGrid({ neighborThreshold: 4, lineOfSight: true })
+          .isOccupied(1, 1)
+      ).toBe(false);
+    });
+
+    it("can use line of sight to look more than two spaces away", () => {
+      expect(
+        SeatGrid.parseFullGrid(["#LLL", "#..#", "####"])
+          .nextGrid({ neighborThreshold: 4, lineOfSight: true })
+          .isOccupied(1, 0)
+      ).toBe(false);
+    });
   });
 
   describe("isStable", () => {
@@ -199,6 +223,44 @@ describe("SeatGrid", () => {
       expect(grid.isOccupied(0, 2)).toBe(true);
       expect(grid.isOccupied(0, 3)).toBe(false);
       expect(grid.occupantCount()).toBe(37);
+    });
+  });
+
+  describe("part 2 example", () => {
+    it("original solution is not initially stable", () => {
+      expect(
+        SeatGrid.parseFullGrid([
+          "#.#L.L#.##",
+          "#LLL#LL.L#",
+          "L.#.L..#..",
+          "#L##.##.L#",
+          "#.#L.LL.LL",
+          "#.#L#L#.##",
+          "..L.L.....",
+          "#L#L##L#L#",
+          "#.LLLLLL.L",
+          "#.#L#L#.##",
+        ]).isStable({ neighborThreshold: 5, lineOfSight: true })
+      ).toBe(false);
+    });
+
+    it("has the right occupant count", () => {
+      expect(
+        SeatGrid.parseFullGrid([
+          "L.LL.LL.LL",
+          "LLLLLLL.LL",
+          "L.L.L..L..",
+          "LLLL.LL.LL",
+          "L.LL.LL.LL",
+          "L.LLLLL.LL",
+          "..L.L.....",
+          "LLLLLLLLLL",
+          "L.LLLLLL.L",
+          "L.LLLLL.LL",
+        ])
+          .nextUntilStable({ neighborThreshold: 5, lineOfSight: true })
+          .occupantCount()
+      ).toBe(26);
     });
   });
 });

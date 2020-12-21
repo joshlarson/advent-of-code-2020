@@ -31,6 +31,13 @@ export abstract class Ship {
     return new EastFacingShip(new Location(0, 0));
   }
 
+  static withWaypoint() {
+    return new ShipWithWaypoint({
+      location: new Location(0, 0),
+      waypoint: new Waypoint(new Location(10, 1)),
+    });
+  }
+
   constructor(location: Location) {
     this.location = location;
   }
@@ -166,9 +173,98 @@ class NorthFacingShip extends SimpleShip {
   }
 }
 
+class ShipWithWaypoint extends Ship {
+  waypoint: Waypoint;
+
+  constructor({
+    location,
+    waypoint,
+  }: {
+    location: Location;
+    waypoint: Waypoint;
+  }) {
+    super(location);
+    this.waypoint = waypoint;
+  }
+
+  turnRight(): Ship {
+    return this.moveWaypoint(this.waypoint.turnRight());
+  }
+
+  moveTo({ x, y }: { x: number; y: number }): Ship {
+    return new ShipWithWaypoint({
+      location: new Location(x, y),
+      waypoint: this.waypoint,
+    });
+  }
+
+  moveForward(amount: number): Ship {
+    const { x: dx, y: dy } = this.waypoint.getLocation();
+    const { x, y } = this.location;
+
+    return this.moveTo({ x: x + dx * amount, y: y + dy * amount });
+  }
+
+  moveSouth(amount: number): Ship {
+    return this.moveWaypoint(this.waypoint.moveSouth(amount));
+  }
+
+  moveWest(amount: number): Ship {
+    return this.moveWaypoint(this.waypoint.moveWest(amount));
+  }
+
+  moveEast(amount: number): Ship {
+    return this.moveWaypoint(this.waypoint.moveEast(amount));
+  }
+
+  moveNorth(amount: number): Ship {
+    return this.moveWaypoint(this.waypoint.moveNorth(amount));
+  }
+
+  private moveWaypoint(waypoint: Waypoint): Ship {
+    return new ShipWithWaypoint({
+      location: this.location,
+      waypoint: waypoint,
+    });
+  }
+}
+
+class Waypoint {
+  location: Location;
+
+  constructor(location: Location) {
+    this.location = location;
+  }
+
+  getLocation(): { x: number; y: number } {
+    return { x: this.location.x, y: this.location.y };
+  }
+
+  turnRight(): Waypoint {
+    const { x, y } = this.location;
+    return new Waypoint(new Location(y, -x));
+  }
+
+  moveNorth(amount: number): Waypoint {
+    return new Waypoint(this.location.north(amount));
+  }
+
+  moveSouth(amount: number): Waypoint {
+    return new Waypoint(this.location.south(amount));
+  }
+
+  moveWest(amount: number): Waypoint {
+    return new Waypoint(this.location.west(amount));
+  }
+
+  moveEast(amount: number): Waypoint {
+    return new Waypoint(this.location.east(amount));
+  }
+}
+
 const fs = require("fs");
 const contents = fs.readFileSync("files/day12.txt", "utf8");
 
 const input = contents.split("\n");
-const ship = Ship.startingShip().runCommands(input);
-console.log(ship.getLocation());
+console.log(Ship.startingShip().runCommands(input).getLocation());
+console.log(Ship.withWaypoint().runCommands(input).getLocation());

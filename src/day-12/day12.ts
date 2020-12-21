@@ -1,18 +1,42 @@
-export abstract class Ship {
-  y: number;
+class Location {
   x: number;
+  y: number;
 
-  static startingShip(): Ship {
-    return new EastFacingShip({ x: 0, y: 0 });
-  }
-
-  constructor({ x, y }) {
+  constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
 
+  south(amount: number): Location {
+    return new Location(this.x, this.y - amount);
+  }
+
+  west(amount: number): Location {
+    return new Location(this.x - amount, this.y);
+  }
+
+  east(amount: number): Location {
+    return new Location(this.x + amount, this.y);
+  }
+
+  north(amount: number): Location {
+    return new Location(this.x, this.y + amount);
+  }
+}
+
+export abstract class Ship {
+  location: Location;
+
+  static startingShip(): Ship {
+    return new EastFacingShip(new Location(0, 0));
+  }
+
+  constructor(location: Location) {
+    this.location = location;
+  }
+
   getLocation(): { x: number; y: number } {
-    return { x: this.x, y: this.y };
+    return { x: this.location.x, y: this.location.y };
   }
 
   runCommands(commands: string[]): Ship {
@@ -55,34 +79,44 @@ export abstract class Ship {
 
   abstract turnRight(): Ship;
 
-  abstract moveTo({ x, y }): Ship;
+  abstract moveTo(location: Location): Ship;
 
   abstract moveForward(amount: number): Ship;
 
+  abstract moveSouth(amount: number): Ship;
+
+  abstract moveWest(amount: number): Ship;
+
+  abstract moveEast(amount: number): Ship;
+
+  abstract moveNorth(amount: number): Ship;
+}
+
+abstract class SimpleShip extends Ship {
   moveSouth(amount: number): Ship {
-    return this.moveTo({ x: this.x, y: this.y - amount });
+    return this.moveTo(this.location.south(amount));
   }
 
   moveWest(amount: number): Ship {
-    return this.moveTo({ x: this.x - amount, y: this.y });
+    return this.moveTo(this.location.west(amount));
   }
 
   moveEast(amount: number): Ship {
-    return this.moveTo({ x: this.x + amount, y: this.y });
+    return this.moveTo(this.location.east(amount));
   }
 
   moveNorth(amount: number): Ship {
-    return this.moveTo({ x: this.x, y: this.y + amount });
+    return this.moveTo(this.location.north(amount));
   }
 }
 
-class EastFacingShip extends Ship {
+class EastFacingShip extends SimpleShip {
   turnRight(): Ship {
-    return new SouthFacingShip({ x: this.x, y: this.y });
+    return new SouthFacingShip(this.location);
   }
 
-  moveTo({ x, y }): Ship {
-    return new EastFacingShip({ x, y });
+  moveTo(location: Location): Ship {
+    return new EastFacingShip(location);
   }
 
   moveForward(amount: number): Ship {
@@ -90,13 +124,13 @@ class EastFacingShip extends Ship {
   }
 }
 
-class SouthFacingShip extends Ship {
+class SouthFacingShip extends SimpleShip {
   turnRight(): Ship {
-    return new WestFacingShip({ x: this.x, y: this.y });
+    return new WestFacingShip(this.location);
   }
 
-  moveTo({ x, y }): Ship {
-    return new SouthFacingShip({ x, y });
+  moveTo(location: Location): Ship {
+    return new SouthFacingShip(location);
   }
 
   moveForward(amount: number): Ship {
@@ -104,13 +138,13 @@ class SouthFacingShip extends Ship {
   }
 }
 
-class WestFacingShip extends Ship {
+class WestFacingShip extends SimpleShip {
   turnRight(): Ship {
-    return new NorthFacingShip({ x: this.x, y: this.y });
+    return new NorthFacingShip(this.location);
   }
 
-  moveTo({ x, y }): Ship {
-    return new WestFacingShip({ x, y });
+  moveTo(location: Location): Ship {
+    return new WestFacingShip(location);
   }
 
   moveForward(amount: number): Ship {
@@ -118,13 +152,13 @@ class WestFacingShip extends Ship {
   }
 }
 
-class NorthFacingShip extends Ship {
+class NorthFacingShip extends SimpleShip {
   turnRight(): Ship {
-    return new EastFacingShip({ x: this.x, y: this.y });
+    return new EastFacingShip(this.location);
   }
 
-  moveTo({ x, y }): Ship {
-    return new NorthFacingShip({ x, y });
+  moveTo(location: Location): Ship {
+    return new NorthFacingShip(location);
   }
 
   moveForward(amount: number): Ship {
